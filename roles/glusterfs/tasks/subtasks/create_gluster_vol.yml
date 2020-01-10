@@ -1,0 +1,10 @@
+---
+- name: create gluster volume
+  become: True
+  gluster_volume:
+    state: present
+    name: pihole-gv
+    bricks: /mnt/glusterfs/bricks/pihole
+    replicas: 3
+    cluster: "{{ groups['glusterservers'] }}"
+    force: yes

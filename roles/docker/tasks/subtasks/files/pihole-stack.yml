@@ -1,0 +1,45 @@
+---
+version: "3.7"
+
+# https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
+
+services:
+  pihole:
+    image: pihole/pihole:latest
+    networks:
+      - dns
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+    environment:
+      TZ: 'America/Los_Angeles'
+      #WEBPASSWORD: ''
+      IPv6: 'false'
+      CONDITIONAL_FORWARDING: 'true'
+      CONDITIONAL_FORWARDING_IP: '192.168.1.1'
+      CONDITIONAL_FORWARDING_DOMAIN: 'local'
+      DNSMASQ_LISTENING: 'local'
+    volumes:
+       - /mnt/glusterfs/vol/pihole/etc-pihole:/etc/pihole/
+       - /mnt/glusterfs/vol/pihole/etc-dnsmasq.d:/etc/dnsmasq.d/
+       - /mnt/glusterfs/vol/pihole/resolv.conf:/etc/resolv.conf
+    #configs:
+    #  - source: resolv.conf
+    #    target: /etc/resolv.conf
+    dns:
+      - 127.0.0.1
+    deploy:
+       mode: replicated
+       replicas: 2
+       #placement:
+       #   preferences:
+       #      - spread: node.labels.dns-zone
+networks:
+  dns:
+    driver: overlay
+    attachable: true
+
+#configs:
+#  resolv.conf:

@@ -1,0 +1,15 @@
+---
+- name: Create GlusterFS directories
+  become: True
+  file:
+    path: '/mnt/glusterfs/vol/pihole/{{ item.dir }}'
+    state: directory
+  loop:
+    - { dir: etc-pihole }
+    - { dir: etc-dnsmasq.d }
+
+- name: Copy resolv.conf
+  become: True
+  copy:
+    src: files/resolv.conf
+    dest: /mnt/glusterfs/vol/pihole/resolv.conf

@@ -1,0 +1,32 @@
+---
+# docker examples
+# https://github.com/Cloudbox/Cloudbox/blob/7851f82f2c33f9e1336461b5264999f5e3b3f240/roles/docker/tasks/subtasks/binary/binary.yml
+- name: Add Docker GPG key
+  become: True
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker repo
+  become: True
+  apt_repository:
+    repo: deb https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Install Docker CE
+  become: True
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+    update_cache: yes
+
+- name: Install Docker pip module
+  become: True
+  pip:
+    name:
+      - docker
+    state: latest
+  ignore_errors: yes

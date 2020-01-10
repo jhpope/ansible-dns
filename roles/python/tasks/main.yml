@@ -1,0 +1,8 @@
+---
+- name: Install python things
+  become: True
+  apt:
+    name:
+      - python3-setuptools
+      - python3-pip
+    state: latest

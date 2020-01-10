@@ -1,0 +1,41 @@
+---
+- name: Add GlusterFS apt key
+  become: True
+  apt_key:
+    url: https://download.gluster.org/pub/gluster/glusterfs/7/rsa.pub
+    state: present
+
+# RPi and npi pull different major versions. Force both to 5
+- name: Add GlusterFS repo
+  become: True
+  apt_repository:
+    repo: deb https://download.gluster.org/pub/gluster/glusterfs/5/LATEST/Debian/stretch/arm64/apt stretch main
+    state: present
+
+- name: Install GlusterFS
+  become: True
+  apt:
+    pkg: 
+      - rpcbind
+      - glusterfs-server
+    state: latest
+    update_cache: yes
+
+- name: Start GlusterFS
+  become: True
+  service:
+    name: '{{ item.service }}'
+    state: started
+  loop:
+    - { service: glusterd }
+    - { service: glustereventsd }
+
+- name: Create GlusterFS directories
+  become: True
+  file:
+    path: '/mnt/glusterfs/{{ item.dir }}'
+    state: directory
+  loop:
+    - { dir: bricks }
+    - { dir: vol }
+        

@@ -1,0 +1,8 @@
+---
+- name: Mount GlusterFS volume pihole-gv
+  become: True
+  mount:
+    path: /mnt/glusterfs/vol/pihole
+    src: localhost:/pihole-gv
+    fstype: glusterfs
+    state: mounted

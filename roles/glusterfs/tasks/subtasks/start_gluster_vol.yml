@@ -1,0 +1,6 @@
+---
+- name: start gluster volume
+  become: True
+  gluster_volume:
+    state: started
+    name: pihole-gv

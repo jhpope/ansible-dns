@@ -1,0 +1,54 @@
+---
+- hosts: all
+  roles:
+    - common
+    - python
+    - glusterfs
+    - docker
+
+- name: GlusterFS master tasks
+  hosts: glustermaster
+  tasks:
+    - import_tasks: roles/glusterfs/tasks/subtasks/create_storage_pool.yml
+    - import_tasks: roles/glusterfs/tasks/subtasks/create_gluster_vol.yml
+  run_once: true
+
+- name: GlusterFS tasks
+  hosts: glusterservers
+  tasks:
+    - import_tasks: roles/glusterfs/tasks/subtasks/start_gluster_vol.yml
+    - import_tasks: roles/glusterfs/tasks/subtasks/mount_gluster_vol.yml
+
+- name: Initalize Pihole directories
+  hosts: glustermaster
+  run_once: true
+  tasks:
+    - import_tasks: roles/glusterfs/tasks/subtasks/pihole_directories.yml
+
+- name: Start swarm
+  hosts: swarmmanagers
+  tasks:
+    - import_tasks: roles/docker/tasks/subtasks/init_swarm.yml
+    - import_tasks: roles/docker/tasks/subtasks/stack_requirements.yml
+
+- name: Add workers to swarm
+  hosts: swarmworkers
+  vars:
+    jointoken: "{{ hostvars.npi1.swarm_info.swarm_facts.JoinTokens.Worker }}"
+    manager: npi1
+  tasks:
+    - import_tasks: roles/docker/tasks/subtasks/join_swarm.yml
+
+- name: Start start stacks
+  hosts: swarmmanagers
+  become: True
+  tasks:
+    - docker_stack:
+        state: "{{ item.state }}"
+        name: "{{ item.name }}"
+        compose:
+          - "{{ item.compose }}"
+      with_items:
+        - { name: portainer, state: present, compose: ~/stacks/portainer-agent-stack.yml }
+        - { name: dns, state: present, compose: ~/stacks/pihole-stack.yml }
+  run_once: true

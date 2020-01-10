@@ -1,0 +1,10 @@
+---
+- name: Create a trusted storage pool
+  become: True
+  gluster_peer:
+    state: present
+    nodes: "{{ groups['glusterservers'] }}"
+      #- npi1
+      #- npi2
+      #- rpi1
+    force: yes

@@ -1,0 +1,11 @@
+---
+- name: Init a new swarm with default parameters
+  become: True
+  docker_swarm:
+    state: present
+
+- name: Register swarm info
+  become: True
+  docker_swarm_info:
+  ignore_errors: yes
+  register: swarm_info

@@ -1,0 +1,24 @@
+---
+# https://docs.ansible.com/ansible/latest/modules/docker_stack_module.html#requirements
+- name: Install docker stack module requirements
+  become: True
+  pip:
+    name:
+      - jsondiff
+      - pyyaml
+    state: latest
+
+- name: Create stacks dir
+  become: True
+  file:
+    path : '~/stacks'
+    state: directory
+
+- name: Install stacks
+  become: True
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  loop:
+    - { src: files/pihole-stack.yml, dest: ~/stacks/pihole-stack.yml }
+    - { src: files/portainer-agent-stack.yml, dest: ~/stacks/portainer-agent-stack.yml }

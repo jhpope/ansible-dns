@@ -1,0 +1,25 @@
+[dnsservers]
+npi1 ansible_host=192.168.1.101
+npi2 ansible_host=192.168.1.102
+rpi1 ansible_host=192.168.1.201
+
+[dnsservers:vars]
+ansible_port=22
+ansible_python_interpreter=/usr/bin/python3
+
+[glustermaster]
+npi1
+
+[glusterservers]
+npi1
+npi2
+rpi1
+
+[glusterclients]
+
+[swarmmanagers]
+npi1 manager=true
+
+[swarmworkers]
+npi2
+rpi1
