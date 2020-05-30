@@ -1,0 +1,14 @@
+---
+- name: Create macvlan network configs
+  become: True
+  docker_network:
+    name: mvl_pihole_config
+    state: present
+    scope: local
+    driver: null
+    driver_options:
+      parent: eth0
+    ipam_config:
+      - subnet: 192.168.1.0/24
+        gateway: 192.168.1.1
+        iprange: 192.168.1.2/31

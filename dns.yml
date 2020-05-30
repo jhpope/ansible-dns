@@ -39,6 +39,16 @@
   tasks:
     - import_tasks: roles/docker/tasks/subtasks/join_swarm.yml
 
+- name: Configure macvlan network
+  hosts: all
+  tasks:
+    - import_tasks: roles/docker/tasks/subtasks/macvlan_config.yml
+
+- name: Start macvlan network
+  hosts: npi1
+  tasks:
+    - import_tasks: roles/docker/tasks/subtasks/macvlan_start.yml
+
 - name: Start start stacks
   hosts: swarmmanagers
   become: True
