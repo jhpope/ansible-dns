@@ -1,0 +1,51 @@
+---
+  - name: Deploy pihole
+    docker_swarm_service:
+      name: pihole
+      image: pihole/pihole:latest
+      networks:
+        - mvl_pihole
+      publish:
+        - target_port: 53
+          published_port: 53
+          protocol: tcp
+          mode: host
+        - target_port: 53
+          published_port: 53
+          protocol: udp
+          mode: host
+        - target_port: 80
+          published_port: 80
+          protocol: tcp
+          mode: host
+        - target_port: 443
+          published_port: 443
+          protocol: tcp
+          mode: host
+      env:
+        TZ: 'America/Los_Angeles'
+        WEBPASSWORD: ''
+        IPv6: 'false'
+        CONDITIONAL_FORWARDING: 'true'
+        CONDITIONAL_FORWARDING_IP: '192.168.1.1'
+        CONDITIONAL_FORWARDING_DOMAIN: 'local'
+        DNSMASQ_LISTENING: 'local'
+        DNS1: 1.1.1.1
+        DNS2: 1.0.0.1
+      mounts:
+        - source: /mnt/glusterfs/vol/pihole/etc-pihole
+          target: /etc/pihole/
+          type: bind
+        - source: /mnt/glusterfs/vol/pihole/etc-dnsmasq.d
+          target: /etc/dnsmasq.d/
+          type: bind
+        - source: /mnt/glusterfs/vol/pihole/resolv.conf
+          target: /etc/resolv.conf
+          type: bind
+      dns:
+        - 127.0.0.1
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+           - "node.labels.dns==true"

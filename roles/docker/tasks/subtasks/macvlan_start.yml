@@ -1,6 +1,6 @@
 ---
 # --config-from option is not available
 # https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
-- name: Create macvlan network configs
+- name: Create macvlan network
   become: True
   shell: docker network create -d macvlan --scope swarm --attachable --config-from mvl_pihole_config mvl_pihole

@@ -41,24 +41,38 @@
 
 - name: Configure macvlan network
   hosts: all
+  gather_facts: no
   tasks:
     - import_tasks: roles/docker/tasks/subtasks/macvlan_config.yml
 
 - name: Start macvlan network
   hosts: npi1
+  gather_facts: no
   tasks:
     - import_tasks: roles/docker/tasks/subtasks/macvlan_start.yml
 
-- name: Start start stacks
+- name: Deploy Portainer
   hosts: swarmmanagers
   become: True
   tasks:
-    - docker_stack:
-        state: "{{ item.state }}"
-        name: "{{ item.name }}"
-        compose:
-          - "{{ item.compose }}"
-      with_items:
-        - { name: portainer, state: present, compose: ~/stacks/portainer-agent-stack.yml }
-        - { name: dns, state: present, compose: ~/stacks/pihole-stack.yml }
-  run_once: true
+    - import_tasks: roles/docker/tasks/subtasks/portainer_stack.yml
+
+- name: Deploy Pihole
+  hosts: swarmmanagers
+  become: True
+  tasks:
+    - import_tasks: roles/docker/tasks/subtasks/pihole_service.yml
+
+#- name: Start stacks
+#  hosts: swarmmanagers
+#  become: True
+#  tasks:
+#    - docker_stack:
+#        state: "{{ item.state }}"
+#        name: "{{ item.name }}"
+#        compose:
+#          - "{{ item.compose }}"
+#      with_items:
+#        - { name: portainer, state: present, compose: ~/stacks/portainer-agent-stack.yml }
+#        - { name: dns, state: present, compose: ~/stacks/pihole-stack.yml }
+#  run_once: true
