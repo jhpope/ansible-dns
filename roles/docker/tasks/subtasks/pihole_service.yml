@@ -24,7 +24,7 @@
           mode: host
       env:
         TZ: 'America/Los_Angeles'
-        WEBPASSWORD: ''
+        WEBPASSWORD: '{{ pihole_webpassword }}'
         IPv6: 'false'
         CONDITIONAL_FORWARDING: 'true'
         CONDITIONAL_FORWARDING_IP: '192.168.1.1'

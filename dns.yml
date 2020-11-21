@@ -1,5 +1,9 @@
 ---
 - hosts: all
+
+  vars_files:
+    - vars/vault.yml
+
   roles:
     - common
     - python
@@ -62,17 +66,3 @@
   become: True
   tasks:
     - import_tasks: roles/docker/tasks/subtasks/pihole_service.yml
-
-#- name: Start stacks
-#  hosts: swarmmanagers
-#  become: True
-#  tasks:
-#    - docker_stack:
-#        state: "{{ item.state }}"
-#        name: "{{ item.name }}"
-#        compose:
-#          - "{{ item.compose }}"
-#      with_items:
-#        - { name: portainer, state: present, compose: ~/stacks/portainer-agent-stack.yml }
-#        - { name: dns, state: present, compose: ~/stacks/pihole-stack.yml }
-#  run_once: true

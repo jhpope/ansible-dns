@@ -36,5 +36,5 @@ Docker swarm's routing mesh is being circumvented via MACVLAN routing. This allo
 
 [Portainer](https://www.portainer.io) is deployed for swarm management. Here we can use the routing mesh. Access Portainer on port ```9000``` of any node in the swarm. You can use Portainer to configure a MACVLAN network or manually via the Docker CLI
 
-Inspect and configure the Pi-hole stack file, ```\roles\docker\tasks\subtasks\files\pihole-stack.yml```. For example, the ```WEBPASSWORD``` isn't set, you should obviously set this.
-> TODO: Use ansible-vault or docker secrets
+### Pi-hole
+The admin password for is defined in the [pihole_service.yml](roles/docker/tasks/subtasks/pihole_service.yml) file and utilizes [Ansible Vault](https://docs.ansible.com/ansible/2.9/user_guide/vault.html#ansible-vault) to secure the password. The default vault password is `password`, but you should obviously [rekey](https://docs.ansible.com/ansible/2.9/user_guide/vault.html#rekeying-encrypted-files) this with a more secure password or just recreate the vault.
