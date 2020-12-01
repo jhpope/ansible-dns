@@ -5,4 +5,5 @@
     path: /mnt/glusterfs/vol/pihole
     src: localhost:/pihole-gv
     fstype: glusterfs
+    opts: noauto,x-systemd.automount
     state: mounted
